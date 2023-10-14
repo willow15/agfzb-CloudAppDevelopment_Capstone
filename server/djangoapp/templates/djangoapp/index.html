@@ -18,15 +18,20 @@
     <nav class="navbar navbar-light bg-light">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Home</a>
+          <a class="navbar-brand" href="#">Dealership Review</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
           <li>
-            <a class="btn btn-link" href="#">{{user.username}}</a>
+            <a class="btn btn-link" href="#">({{user.username}})</a>
             <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
           </li>
           {% else %}
+          {% if message %}
+            <div class="alert alert-warning">
+              {{ message }}
+            </div>
+          {% endif %}
           <li>
             <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
               {% csrf_token %}
