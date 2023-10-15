@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 import atexit
 
 #Add your Cloudant service credentials here
+# TODO: remove sensitive data when upload to github
 cloudant_username = 'b4bd68da-5f3f-4235-aea3-59e0ce226a88-bluemix'
 cloudant_api_key = 'HzFd3MvvVw4Hp3DaH0uXjsAJGWlj4eqOJNT1ZM2W80z6'
 cloudant_url = 'https://b4bd68da-5f3f-4235-aea3-59e0ce226a88-bluemix.cloudantnosqldb.appdomain.cloud'

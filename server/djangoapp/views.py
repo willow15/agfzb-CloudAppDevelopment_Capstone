@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-# from .restapis import related methods
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -78,15 +78,44 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
-    context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
+        url = "https://willow15liu-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
+        # Get dealers from the URL
+        dealerships = get_dealers_from_cf(url)
+        # Concat all dealer's short name
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        # Return a list of dealer short name
+        return HttpResponse(dealer_names)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
-# def get_dealer_details(request, dealer_id):
-# ...
+def get_dealer_details(request, dealer_id):
+    if request.method == 'GET':
+        url = 'https://willow15liu-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
+        reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        review_contents = ' '.join([review.review + '->' + review.sentiment for review in reviews])
+        return HttpResponse(review_contents)
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):
+    # user = request.user
+    # if user.is_authenticated:
+    if request.method == 'POST':
+        post_body = json.loads(request.body)
+        review = dict()
+        # review["time"] = datetime.utcnow().isoformat()
+        review['id'] = post_body['id']
+        review['name'] = post_body['name']
+        review['dealership'] = dealer_id
+        review['review'] = post_body['review']
+        review['purchase'] = post_body['purchase']
+        review['purchase_date'] = post_body['purchase_date']
+        review['car_make'] = post_body['car_make']
+        review['car_model'] = post_body['car_model']
+        review['car_year'] = post_body['car_year']
+
+        json_payload = {'review': review}
+
+        url = 'https://willow15liu-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
+        response = post_request(url, json_payload)
+        return HttpResponse(response)
