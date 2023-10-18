@@ -79,22 +79,29 @@ def registration_request(request):
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     if request.method == "GET":
-        url = "https://willow15liu-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
+        context = {}
+        # url = "https://willow15liu-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
+        url = "https://willow15liu-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
-        # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
-        # Return a list of dealer short name
-        return HttpResponse(dealer_names)
+        # # Concat all dealer's short name
+        # dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        # # Return a list of dealer short name
+        # return HttpResponse(dealer_names)
+        context['dealership_list'] = dealerships
+        return render(request, 'djangoapp/index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
     if request.method == 'GET':
+        context = {}
         url = 'https://willow15liu-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
         reviews = get_dealer_reviews_from_cf(url, dealer_id)
-        review_contents = ' '.join([review.review + '->' + review.sentiment for review in reviews])
-        return HttpResponse(review_contents)
+        # review_contents = ' '.join([review.review + '->' + review.sentiment for review in reviews])
+        # return HttpResponse(review_contents)
+        context['review_list'] = reviews
+        return render(request, 'djangoapp/dealer_details.html', context)
 
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
