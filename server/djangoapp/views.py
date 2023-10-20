@@ -81,7 +81,7 @@ def get_dealerships(request):
     if request.method == "GET":
         context = {}
         # url = "https://willow15liu-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
-        url = "https://willow15liu-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
+        url = "https://willow15liu-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//api/dealership"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # # Concat all dealer's short name
@@ -97,12 +97,17 @@ def get_dealer_details(request, dealer_id):
     if request.method == 'GET':
         context = {}
         # url = 'https://willow15liu-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
-        url = 'https://willow15liu-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
+        url = 'https://willow15liu-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
         reviews = get_dealer_reviews_from_cf(url, dealer_id)
         # review_contents = ' '.join([review.review + '->' + review.sentiment for review in reviews])
         # return HttpResponse(review_contents)
+        url = "https://willow15liu-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//api/dealership"
+        # Get dealers from the URL
+        dealerships = get_dealers_from_cf(url, dealerId=dealer_id)
+
         context['review_list'] = reviews
         context['dealer_id'] = dealer_id
+        context['dealership_name'] = dealerships[0].full_name
         return render(request, 'djangoapp/dealer_details.html', context)
 
 # Create a `add_review` view to submit a review
@@ -125,6 +130,6 @@ def add_review(request, dealer_id):
 
         json_payload = {'review': review}
 
-        url = 'https://willow15liu-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
+        url = 'https://willow15liu-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
         response = post_request(url, json_payload)
         return HttpResponse(response)

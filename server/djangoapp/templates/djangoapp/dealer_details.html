@@ -5,6 +5,12 @@
     <title>Dealership Review</title>
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+    img {
+      max-width: 10%;
+      height: auto;
+    }
+    </style>
 </head>
 
     <body>
@@ -54,6 +60,7 @@
     </nav>
 
     <!-- Add reviews as cards -->
+    <h2>Reviews for {{dealership_name}}</h2>
     <div class="card-columns">
       {% for review in review_list %}
       <div class="card">
