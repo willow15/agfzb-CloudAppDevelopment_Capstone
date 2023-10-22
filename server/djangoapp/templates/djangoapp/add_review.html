@@ -8,9 +8,53 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
-
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
 </head>
-    <body>
+<body>
+    <div class="container-fluid">
     <!--Add review form here -->
-    </body>
+      <h2>Add a review about {{dealership_name}}</h2>
+      <form action="{% url 'djangoapp:add_review' dealer_id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="content"><b>Enter the review content:</b></label>
+          <textarea class="form-control" id="content" name="content" rows="2" required>
+          </textarea>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck">
+          <label for="purchasecheck" class="form-check-label">Has purchased the car from {{dealership_name}} ?
+            <span style="color: gray">(select purchased car information below if checked)</span></label>
+          <br/>
+        </div>
+
+        <div class="mb-3">
+          <label for="car"><b>Select your car (model-make-year):</b></label>
+          <select name="car" id="car" class="form-select" required>
+            {% for car in cars %}
+              <option selected value={{car.id}}>{{car.name}}-{{car.car_make.name}}-{{car.year|date:"Y"}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="purchasedate"><b>Select your purchase date:</b></label>
+          <input class="date-own form-control" style="width: 300px" type="date" name="purchasedate" id="purchasedate">
+        </div>
+
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+</body>
+
+<script>
+  $(function() {
+    $("#purchasedate").datepicker(
+      {
+        format: 'mm/dd/yyyy'
+      }
+    )
+  });
+</script>
 </html>

@@ -60,26 +60,28 @@
     </nav>
 
     <!-- Add reviews as cards -->
-    <h2>Reviews for {{dealership_name}}</h2>
-    <div class="card-columns">
-      {% for review in review_list %}
-      <div class="card">
-        {% if review.sentiment == 'positive' %}
-        <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png" alt="positive">
-        {% else %}
-          {% if review.sentiment == 'negative' %}
-          <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png" alt="negative">
+    <div class="container-fluid">
+      <h2>Reviews for {{dealership_name}}</h2>
+      <div class="card-columns">
+        {% for review in review_list %}
+        <div class="card">
+          {% if review.sentiment == 'positive' %}
+          <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png" alt="positive">
           {% else %}
-          <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png" alt="neutral">
+            {% if review.sentiment == 'negative' %}
+            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png" alt="negative">
+            {% else %}
+            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png" alt="neutral">
+            {% endif %}
           {% endif %}
-        {% endif %}
-        <div class="card-body">
-          <h5 class="card-title">{{review.car_model}},{{review.car_make}}</h5>
-          <h5 class="card-title">{{review.car_year}}</h5>
-          <p class="card-text">{{review.review}}</p>
+          <div class="card-body">
+            <h5 class="card-title">{{review.car_model}},{{review.car_make}}</h5>
+            <h5 class="card-title">{{review.car_year}}</h5>
+            <p class="card-text">{{review.review}}</p>
+          </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
 
     </body>

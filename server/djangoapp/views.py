@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-# from .models import related models
+from .models import CarModel
 from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -112,24 +112,42 @@ def get_dealer_details(request, dealer_id):
 
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
-    # user = request.user
-    # if user.is_authenticated:
-    if request.method == 'POST':
-        post_body = json.loads(request.body)
-        review = dict()
-        # review["time"] = datetime.utcnow().isoformat()
-        review['id'] = post_body['id']
-        review['name'] = post_body['name']
-        review['dealership'] = dealer_id
-        review['review'] = post_body['review']
-        review['purchase'] = post_body['purchase']
-        review['purchase_date'] = post_body['purchase_date']
-        review['car_make'] = post_body['car_make']
-        review['car_model'] = post_body['car_model']
-        review['car_year'] = post_body['car_year']
+    user = request.user
+    if user.is_authenticated:
+        if request.method == 'GET':
+            context = {}
+            context['dealer_id'] = dealer_id
 
-        json_payload = {'review': review}
+            cars = CarModel.objects.filter(dealership=dealer_id)
+            context['cars'] = cars
 
-        url = 'https://willow15liu-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
-        response = post_request(url, json_payload)
-        return HttpResponse(response)
+            url = "https://willow15liu-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai//api/dealership"
+            dealerships = get_dealers_from_cf(url, dealerId=dealer_id)
+            context['dealership_name'] = dealerships[0].full_name
+
+            return render(request, 'djangoapp/add_review.html', context)
+        elif request.method == 'POST':
+            print(request.POST)
+
+            # post_body = json.loads(request.body)
+            review = dict()
+            review['time'] = datetime.utcnow().isoformat()
+            review['id'] = int(datetime.utcnow().timestamp())
+            review['name'] = user.username
+            review['dealership'] = dealer_id
+            review['review'] = request.POST['content']
+            if 'purchasecheck' in request.POST and request.POST['purchasecheck'] == 'on':
+                review['purchase'] = True
+            else:
+                review['purchase'] = False
+            review['purchase_date'] = request.POST['purchasedate']
+            car = CarModel.objects.get(pk=request.POST['car'])
+            review['car_make'] = car.car_make.name
+            review['car_model'] = car.name
+            review['car_year'] = car.year.strftime('%Y')
+
+            json_payload = {'review': review}
+
+            url = 'https://willow15liu-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
+            response = post_request(url, json_payload)
+            return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
