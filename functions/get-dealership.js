@@ -7,7 +7,6 @@ const Cloudant = require('@cloudant/cloudant');
 async function dbCloudantConnect() {
     try {
         const cloudant = Cloudant({
-            // TODO: remove sensitive data when upload to github
             plugins: { iamauth: { iamApiKey: 'HzFd3MvvVw4Hp3DaH0uXjsAJGWlj4eqOJNT1ZM2W80z6' } }, // Replace with your IAM API key
             url: 'https://b4bd68da-5f3f-4235-aea3-59e0ce226a88-bluemix.cloudantnosqldb.appdomain.cloud', // Replace with your Cloudant URL
         });
@@ -36,7 +35,7 @@ app.get('/api/dealership', (req, res) => {
     // Create a selector object based on query parameters
     const selector = {};
     if (state) {
-        selector.state = state;
+        selector.st = state;
     }
 
     if (id) {
