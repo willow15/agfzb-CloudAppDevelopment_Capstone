@@ -160,8 +160,8 @@ def get_dealer_reviews_from_cf(url, dealerId):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(text):
-    url = 'https://api.jp-tok.natural-language-understanding.watson.cloud.ibm.com/instances/e58cf71e-99e8-4eaa-9d19-1619db4e7fed/v1/analyze'
-    api_key = 'D9t5wdgIFLkBONKPcCmRmYyPmD5MIhA7zgb9GyXsBV-R'
+    url = ''
+    api_key = ''
     version = '2022-04-07'
     features = ['sentiment']
     json_result = get_request(url, api_key=api_key, version=version,
@@ -170,8 +170,8 @@ def analyze_review_sentiments(text):
         return json_result['sentiment']['document']['label']
     return ''
 
-    # url = 'https://api.jp-tok.natural-language-understanding.watson.cloud.ibm.com/instances/e58cf71e-99e8-4eaa-9d19-1619db4e7fed'
-    # api_key = "D9t5wdgIFLkBONKPcCmRmYyPmD5MIhA7zgb9GyXsBV-R"
+    # url = ''
+    # api_key = ""
     # authenticator = IAMAuthenticator(api_key)
     # natural_language_understanding = NaturalLanguageUnderstandingV1(version='2022-04-07',authenticator=authenticator)
     # natural_language_understanding.set_service_url(url)
